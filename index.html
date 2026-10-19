@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我的收藏库 · 自用导航</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23D9A45B' d='M6 3h12a1 1 0 0 1 1 1v16.6a.5.5 0 0 1-.76.43L12 17.2l-6.24 3.83A.5.5 0 0 1 5 20.6V4a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0F131B; --surface:#171D29; --surface2:#1E2635;
+    --border:#2A3347; --border2:#36415A;
+    --text:#E7EBF2; --text2:#98A2B5; --text3:#6B7688;
+    --accent:#D9A45B; --accent2:#C08A3F; --accent-dim:#3A3423;
+    --danger:#C9604A; --ok:#6FBF8F;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.5;
+    min-height:100vh;
+  }
+  a{color:inherit; text-decoration:none}
+  .masthead{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  .masthead-inner{ max-width:1080px; margin:0 auto; padding:14px 18px 12px; }
+  .toprow{ display:flex; align-items:center; gap:10px; }
+  .logo{width:34px; height:34px; flex:none}
+  .logo svg{width:100%; height:100%; display:block}
+  .site-title{ font-size:17px; font-weight:700; letter-spacing:.3px; line-height:1.2; }
+  .site-title small{ display:block; font-size:11px; font-weight:400; color:var(--text3); letter-spacing:.5px; }
+  .count-badge{ margin-left:auto; font-size:12px; color:var(--text2); white-space:nowrap; }
+  .count-badge b{color:var(--accent); font-weight:700}
+  .searchrow{ margin-top:12px; display:flex; gap:8px; }
+  .searchbox{ position:relative; flex:1; }
+  .searchbox .ic{ position:absolute; left:11px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text3); pointer-events:none; }
+  .searchbox input{
+    width:100%; height:42px; padding:0 12px 0 36px;
+    background:var(--surface); color:var(--text);
+    border:1px solid var(--border); border-radius:10px;
+    font-size:16px; outline:none; transition:border-color .15s;
+  }
+  .searchbox input:focus{border-color:var(--accent2)}
+  .searchbox input::placeholder{color:var(--text3)}
+  .btn{
+    height:42px; padding:0 14px; flex:none;
+    border-radius:10px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); font-size:15px;
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+    transition:background .15s, border-color .15s;
+  }
+  .btn svg{width:16px; height:16px}
+  .btn:hover{border-color:var(--border2)}
+  .btn.primary{ background:var(--accent); color:#241B0C; border-color:var(--accent); font-weight:600; }
+  .btn.primary:hover{background:var(--accent2); border-color:var(--accent2)}
+  .btn.primary svg{color:#241B0C}
+  .chips{
+    max-width:1080px; margin:0 auto; padding:10px 18px 2px;
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:none; height:34px; padding:0 13px;
+    display:inline-flex; align-items:center; gap:6px;
+    border:1px solid var(--border); border-radius:999px;
+    background:var(--surface); color:var(--text2); font-size:13px; cursor:pointer;
+    transition:all .15s;
+  }
+  .chip .dot{width:7px; height:7px; border-radius:50%; background:var(--text3)}
+  .chip:hover{color:var(--text); border-color:var(--border2)}
+  .chip.on{background:var(--accent-dim); color:var(--accent); border-color:var(--accent2)}
+  .chip.on .dot{background:var(--accent)}
+  .wrap{max-width:1080px; margin:0 auto; padding:16px 18px 60px}
+  .grid{ display:grid; gap:12px; grid-template-columns:repeat(2, minmax(0,1fr)); }
+  .card{
+    position:relative;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:14px; display:flex; flex-direction:column; gap:9px;
+    min-height:118px;
+    transition:transform .15s, border-color .15s, background .15s;
+  }
+  .card:hover{transform:translateY(-2px); border-color:var(--border2); background:var(--surface2)}
+  .card .fav{
+    width:32px; height:32px; border-radius:9px; flex:none;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--surface2); border:1px solid var(--border);
+    font-size:15px; font-weight:700; color:var(--accent); overflow:hidden;
+  }
+  .card .fav img{width:100%; height:100%; object-fit:cover}
+  .card .t{ font-size:14.5px; font-weight:600; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .card .note{ font-size:12px; color:var(--text2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .card .meta{ margin-top:auto; font-size:11.5px; color:var(--text3); display:flex; align-items:center; gap:6px; min-width:0; }
+  .card .meta .cat{flex:none; color:var(--accent)}
+  .card .meta .host{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  .card .openlink{ position:absolute; inset:0; border-radius:var(--radius); cursor:pointer; }
+  .card .ops{ position:absolute; top:10px; right:10px; display:flex; gap:4px; opacity:.9; }
+  .card .ops button{
+    width:30px; height:30px; border-radius:8px; border:1px solid var(--border);
+    background:var(--surface2); color:var(--text2); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all .15s;
+  }
+  .card .ops button svg{width:14px; height:14px}
+  .card .ops button:hover{color:var(--text)}
+  .card .ops button.del:hover{color:var(--danger); border-color:var(--danger)}
+  .empty{ grid-column:1 / -1; text-align:center; padding:60px 20px; color:var(--text3); }
+  .empty .big{font-size:34px; margin-bottom:10px; color:var(--border2)}
+  .empty .p1{font-size:15px; color:var(--text2); margin-bottom:4px}
+  .empty .p2{font-size:13px}
+  .overlay{
+    position:fixed; inset:0; z-index:40; background:rgba(8,11,17,.6);
+    display:none; align-items:flex-end; justify-content:center;
+  }
+  .overlay.show{display:flex}
+  .sheet{
+    width:100%; max-width:520px; background:var(--surface);
+    border-radius:18px 18px 0 0; padding:20px 18px 24px;
+    border-top:1px solid var(--border2);
+    animation:up .22s ease;
+  }
+  @keyframes up{from{transform:translateY(30px); opacity:0}to{transform:none; opacity:1}}
+  .sheet h3{ font-size:17px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .sheet h3 svg{width:18px; height:18px; color:var(--accent)}
+  .field{margin-bottom:14px}
+  .field label{ display:block; font-size:12.5px; color:var(--text2); margin-bottom:6px; }
+  .field input, .field select{
+    width:100%; height:44px; padding:0 12px;
+    background:var(--bg); color:var(--text);
+    border:1px solid var(--border); border-radius:10px; font-size:16px; outline:none;
+  }
+  .field input:focus, .field select:focus{border-color:var(--accent2)}
+  .field textarea{
+    width:100%; min-height:74px; padding:10px 12px; resize:vertical;
+    background:var(--bg); color:var(--text);
+    border:1px solid var(--border); border-radius:10px; font-size:16px; outline:none; line-height:1.5;
+  }
+  .field textarea:focus{border-color:var(--accent2)}
+  .field select{
+    cursor:pointer; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2398A2B5' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center; background-size:15px;
+  }
+  .field .hint{font-size:11.5px; color:var(--text3); margin-top:5px}
+  .newcat{margin-top:8px; display:flex; gap:8px}
+  .newcat input{flex:1}
+  .actions{display:flex; gap:10px; margin-top:18px}
+  .actions .btn{flex:1; height:46px; justify-content:center; font-size:15px}
+  .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px);
+    background:var(--surface2); border:1px solid var(--border2); color:var(--text);
+    padding:10px 16px; border-radius:10px; font-size:13.5px; z-index:60;
+    opacity:0; pointer-events:none; transition:all .25s;
+    max-width:88vw; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translate(-50%,0)}
+  @media (min-width:600px){
+    .grid{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .overlay{align-items:center; padding:20px}
+    .sheet{border-radius:16px}
+  }
+  @media (min-width:900px){
+    .grid{grid-template-columns:repeat(4, minmax(0,1fr))}
+    .toprow{padding-top:4px}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="toprow">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none"><path fill="#D9A45B" d="M6 3h12a1 1 0 0 1 1 1v16.6a.5.5 0 0 1-.76.43L12 17.2l-6.24 3.83A.5.5 0 0 1 5 20.6V4a1 1 0 0 1 1-1Z"/><path fill="#241B0C" d="M8 6.5h8v1.6H8zM8 10h8v1.6H8z"/></svg>
+      </div>
+      <div class="site-title">我的收藏库<small>PERSONAL NAVBOOK</small></div>
+      <div class="count-badge" id="countBadge"><b>0</b> 条收藏</div>
+    </div>
+    <div class="searchrow">
+      <div class="searchbox">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+        <input id="q" type="text" placeholder="搜索名称、备注或链接…" autocomplete="off">
+      </div>
+      <button class="btn primary" id="addBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+        收藏
+      </button>
+    </div>
+  </div>
+  <nav class="chips" id="chips"></nav>
+</header>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <h3 id="sheetTitle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v16.6a.5.5 0 0 1-.76.43L12 17.2l-6.24 3.83A.5.5 0 0 1 5 20.6V4a1 1 0 0 1 1-1Z"/></svg>
+      <span id="sheetTitleText">添加收藏</span>
+    </h3>
+    <div class="field">
+      <label for="fName">名称</label>
+      <input id="fName" type="text" placeholder="例如：豆瓣电影">
+    </div>
+    <div class="field">
+      <label for="fUrl">链接</label>
+      <input id="fUrl" type="url" placeholder="https://…" inputmode="url">
+    </div>
+    <div class="field">
+      <label for="fCat">分类</label>
+      <select id="fCat"></select>
+      <div class="newcat">
+        <input id="fNewCat" type="text" placeholder="或输入新分类" autocomplete="off">
+        <button class="btn" id="addCatBtn" type="button">新增</button>
+      </div>
+    </div>
+    <div class="field">
+      <label for="fNote">备注</label>
+      <textarea id="fNote" placeholder="一句备注，选填"></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn" id="cancelBtn" type="button">取消</button>
+      <button class="btn primary" id="saveBtn" type="button">保存收藏</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var KEY='navbook_v1';
+  var CATS=['影视','直播','工具','阅读'];
+  var state={cats:CATS, items:[], cat:null, q:''};
+  var editingId=null;
+
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY);
+      if(!raw) return;
+      var d=JSON.parse(raw);
+      if(Array.isArray(d.cats)&&d.cats.length) state.cats=d.cats;
+      if(Array.isArray(d.items)) state.items=d.items;
+    }catch(e){}
+  }
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify({cats:state.cats, items:state.items}));
+    renderAll();
+  }
+  function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+  function hostname(u){
+    try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return ''}
+  }
+  function iconLetter(name){
+    var c=(name||'?').trim().charAt(0);
+    return /[0-9A-Za-z]/.test(c)?c.toUpperCase():c;
+  }
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+
+  function renderChips(){
+    var el=document.getElementById('chips');
+    var h='';
+    h+='<button class="chip'+(state.cat==null?' on':'')+'" data-cat=""><span class="dot"></span>全部</button>';
+    state.cats.forEach(function(c){
+      var n=state.items.filter(function(it){return it.cat===c}).length;
+      h+='<button class="chip'+(state.cat===c?' on':'')+'" data-cat="'+esc(c)+'"><span class="dot"></span>'+esc(c)+' <span style="opacity:.6">'+n+'</span></button>';
+    });
+    el.innerHTML=h;
+    el.querySelectorAll('.chip').forEach(function(b){
+      b.addEventListener('click',function(){
+        state.cat=b.getAttribute('data-cat')||null;
+        renderAll();
+      });
+    });
+  }
+  function renderCards(){
+    var grid=document.getElementById('grid');
+    var q=state.q.toLowerCase();
+    var list=state.items.filter(function(it){
+      if(state.cat && it.cat!==state.cat) return false;
+      if(!q) return true;
+      return (it.name||'').toLowerCase().indexOf(q)>-1
+          || (it.note||'').toLowerCase().indexOf(q)>-1
+          || (it.url||'').toLowerCase().indexOf(q)>-1;
+    });
+    list.sort(function(a,b){return (b.created||0)-(a.created||0)});
+
+    if(!list.length){
+      grid.innerHTML='<div class="empty"><div class="big">◈</div><div class="p1">'+
+        (state.items.length? '没有匹配的收藏':'这里还是空的')+'</div>'+
+        '<div class="p2">'+ (state.items.length? '换个关键词或分类试试':'点右上角「收藏」开始添加你的第一个链接')+'</div></div>';
+      return;
+    }
+    var h='';
+    list.forEach(function(it){
+      var host=hostname(it.url);
+      h+='<div class="card">'
+        +'<a class="openlink" href="'+esc(it.url)+'" target="_blank" rel="noopener" aria-label="打开 '+esc(it.name)+'"></a>'
+        +'<div class="fav">'+esc(iconLetter(it.name))+'</div>'
+        +'<div class="ops">'
+        +'<button class="edit" data-id="'+it.id+'" aria-label="编辑"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>'
+        +'<button class="del" data-id="'+it.id+'" aria-label="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg></button>'
+        +'</div>'
+        +'<div class="t">'+esc(it.name)+'</div>'
+        +(it.note?'<div class="note">'+esc(it.note)+'</div>':'')
+        +'<div class="meta"><span class="cat">'+esc(it.cat||'未分类')+'</span><span class="host">'+esc(host||it.url)+'</span></div>'
+        +'</div>';
+    });
+    grid.innerHTML=h;
+    grid.querySelectorAll('.edit').forEach(function(b){
+      b.addEventListener('click',function(ev){ev.preventDefault();openSheet(this.getAttribute('data-id'))});
+    });
+    grid.querySelectorAll('.del').forEach(function(b){
+      b.addEventListener('click',function(ev){ev.preventDefault();del(this.getAttribute('data-id'))});
+    });
+  }
+  function renderAll(){
+    var n=state.items.length;
+    document.getElementById('countBadge').innerHTML='<b>'+n+'</b> 条收藏';
+    renderChips();
+    renderCards();
+  }
+
+  function openSheet(id){
+    editingId=id||null;
+    var catSel=document.getElementById('fCat');
+    catSel.innerHTML='';
+    state.cats.forEach(function(c){
+      var o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);
+    });
+    document.getElementById('fNewCat').value='';
+    var it=id?state.items.find(function(x){return x.id===id}):null;
+    if(it){
+      document.getElementById('sheetTitleText').textContent='编辑收藏';
+      document.getElementById('fName').value=it.name||'';
+      document.getElementById('fUrl').value=it.url||'';
+      document.getElementById('fCat').value=it.cat||state.cats[0];
+      document.getElementById('fNote').value=it.note||'';
+    }else{
+      document.getElementById('sheetTitleText').textContent='添加收藏';
+      document.getElementById('fName').value='';
+      document.getElementById('fUrl').value='';
+      document.getElementById('fCat').value=state.cat||state.cats[0]||'';
+      document.getElementById('fNote').value='';
+    }
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('fName').focus();
+  }
+  function closeSheet(){document.getElementById('overlay').classList.remove('show');editingId=null}
+  function saveItem(){
+    var name=document.getElementById('fName').value.trim();
+    var url=document.getElementById('fUrl').value.trim();
+    var cat=document.getElementById('fCat').value;
+    var note=document.getElementById('fNote').value.trim();
+    if(!name){toast('请填写名称');return}
+    if(!/^https?:\/\//i.test(url)){toast('链接需以 http(s):// 开头');return}
+    if(!cat){toast('请选择分类');return}
+    if(editingId){
+      var it=state.items.find(function(x){return x.id===editingId});
+      if(it){it.name=name;it.url=url;it.cat=cat;it.note=note}
+      toast('已保存修改');
+    }else{
+      state.items.push({id:uid(),name:name,url:url,cat:cat,note:note,created:Date.now()});
+      toast('已收藏「'+name+'」');
+    }
+    save();
+    closeSheet();
+  }
+  function addCat(){
+    var v=document.getElementById('fNewCat').value.trim();
+    if(!v){return}
+    if(state.cats.indexOf(v)<0){
+      state.cats.push(v);
+      var catSel=document.getElementById('fCat');
+      var o=document.createElement('option');o.value=v;o.textContent=v;catSel.appendChild(o);
+    }
+    document.getElementById('fCat').value=v;
+    document.getElementById('fNewCat').value='';
+    toast('分类已添加');
+  }
+  function del(id){
+    var it=state.items.find(function(x){return x.id===id});
+    if(!it)return;
+    if(!confirm('删除收藏「'+it.name+'」？'))return;
+    state.items=state.items.filter(function(x){return x.id!==id});
+    save();
+    toast('已删除');
+  }
+
+  var toastTimer;
+  function toast(msg){
+    var t=document.getElementById('toast');
+    t.textContent=msg;t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){t.classList.remove('show')},1600);
+  }
+
+  document.getElementById('q').addEventListener('input',function(e){state.q=e.target.value;renderCards()});
+  document.getElementById('addBtn').addEventListener('click',function(){openSheet(null)});
+  document.getElementById('saveBtn').addEventListener('click',saveItem);
+  document.getElementById('cancelBtn').addEventListener('click',closeSheet);
+  document.getElementById('addCatBtn').addEventListener('click',addCat);
+  document.getElementById('overlay').addEventListener('click',function(e){
+    if(e.target===this)closeSheet();
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape')closeSheet();
+  });
+
+  load();
+  renderAll();
+})();
+</script>
+</body>
+</html>
